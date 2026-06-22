@@ -1,1 +1,3 @@
-# ubuntu-server-monitoramento
+# Ubuntu Server Monitoramento
+
+Projeto de monitoramento com Ubuntu Server.
