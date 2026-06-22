@@ -60,8 +60,12 @@ Tecnologias utilizadas:
 - Segmentação por VLAN
 
 ## Comandos Utilizados
-
+```bash
+sudo apt update
+sudo apt upgrade -y
 ### Atualização do sistema
+
+```
 
 ```mermaid
 graph LR
