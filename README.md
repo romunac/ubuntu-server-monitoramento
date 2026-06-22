@@ -63,6 +63,59 @@ Tecnologias utilizadas:
 
 ### Atualização do sistema
 
+```mermaid
+graph LR
+    %% Definição de Estilos
+    classDef server fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef stack fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef user fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+
+    %% Nó Ubuntu Server (Alvo)
+    subgraph UBUNTU_SERVER ["Ubuntu Server (Host Monitorado)"]
+        direction TB
+        OS["Ubuntu OS / Kernel"]
+        
+        subgraph AGENTS ["Agentes de Coleta"]
+            NE["Node Exporter <br> (Métricas de Hardware/SO)"]
+            PT["Promtail / Logstash <br> (Coleta de Logs)"]
+            CA["cAdvisor <br> (Métricas de Containers)"]
+        end
+        
+        OS --> NE
+        OS --> PT
+    end
+    class UBUNTU_SERVER server;
+
+    %% Nó Stack de Monitoramento
+    subgraph MONITORING_STACK ["Servidor de Monitoramento (Docker Stack)"]
+        direction TB
+        PROM[("Prometheus <br> (Banco de Métricas)")]
+        LOKI[("Grafana Loki <br> (Banco de Logs)")]
+        GRAFANA{"Grafana <br> (Visualização)"}
+        
+        PROM --> GRAFANA
+        LOKI --> GRAFANA
+    end
+    class MONITORING_STACK stack;
+
+    %% Nó de Acesso
+    subgraph CLIENT ["Acesso do Administrador"]
+        ADMIN["DevOps / SysAdmin <br> (Navegador Web)"]
+        ALERT["Alertmanager <br> (Discord/Slack/E-mail)"]
+    end
+    class CLIENT user;
+
+    %% Conexões de Rede e Fluxo de Dados
+    NE -- "Porta 9100 (HTTP Pull)" --> PROM
+    CA -- "Porta 8080 (HTTP Pull)" --> PROM
+    PT -- "Porta 3100 (HTTP Push)" --> LOKI
+    
+    GRAFANA -- "Porta 3000 (HTTPS)" --> ADMIN
+    PROM --> ALERT
+
+```
+
 ```bash
 sudo apt update
 sudo apt upgrade -y
+
